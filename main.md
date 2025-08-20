@@ -68,15 +68,15 @@ public static void create_directorys(string path)
     pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
 }
 ```
-
+&nbsp;
 *Here, I create a `Settings` folder, an `Addons` folder, and an `options.json` file (for UI color preferences, saved mod packs, and user info — key-based since this tool is private).*
-
+&nbsp;
 *After creating the directories, I pull all addons into the base directory's addon folder. That way, I can read `options.json`, check what was previously enabled, and move the matching addons back into the L4D2 addons folder to re-enable them.*  
-
+&nbsp;
 *I then move the enabled addons into L4D2 addon folder. Now its time to update addon list and ui. This isn't too hard all we gotta do is scrape both addon folders and grab any addons. A lot of addon names are there ids. So I format the file name and extract the id. Once I extract all the ids of the I put them in a list and continue to network request.*
-
-##HOW I GRAB ALL ADDONS
-
+&nbsp;
+## HOW I GRAB ALL ADDONS
+&nbsp;
 ```c#
     public static List<string> grab_addon_paths()
     {
@@ -101,9 +101,9 @@ public static void create_directorys(string path)
         return addons;
     }
 ```
-
-##HOW I EXTRACT THE FILE NAMES
-
+&nbsp;
+## HOW I EXTRACT THE FILE NAMES
+&nbsp;
 ```c#
     public static void pull_mods_to_path(string path,string new_folder_path) //puts all mods to a single folder for managment.
     {
@@ -141,7 +141,7 @@ foreach(string id in ids)
 }
 ```
 &nbsp;
-##JSON RESPONSE EXAMPLE :
+## JSON RESPONSE EXAMPLE :
 &nbsp;
 ```json
 {
@@ -212,7 +212,7 @@ foreach(string id in ids)
 &nbsp;
 *As you can see in this example there are two addons and they have there own props. We can use the structure below to deseralize this json data into a usable c# table.*
 &nbsp;
-##THE ADDON STRUCTURE :
+##### THE ADDON STRUCTURE :
 &nbsp;
 ```c#    
 	public class Root
@@ -410,7 +410,7 @@ foreach(string id in ids)
 &nbsp;
 *This is a simple function that assignes a designated key to a certain ui list element. So we can easily acsess list elements without to much work. You can also see the array of strings that simply just contain the sub_cats(I will explain later why what I did was bad)*
 &nbsp;
-##HOW I GRAB MAIN TAG
+##### HOW I GRAB MAIN TAG
 &nbsp;
 ```c#
     public static string grab_main_cat(List<steamtag> steamtags)
@@ -480,7 +480,7 @@ foreach(string id in ids)
     }
 ```
 &nbsp;
-##HOW I GRAB SUB TAG
+##### HOW I GRAB SUB TAG
 &nbsp;
 ```c#
     public static string grab_sub_cat(string cat,List<steamtag> tags)
@@ -563,7 +563,7 @@ foreach(string id in ids)
 &nbsp;
 *I can then use a array of categorey classes for each addon.  We will then loop through that array grab and the sub_cat. The sub_cat is important due to how I handle my grouping. My ListBoxes are first the sub cat and are followed up by `List`. For example lets say Main is our form. The list element would be grabbed like this  : `Main.Controls[sub_cat + "List"]` now that we have our ui element we simply add it to ui list element.*
 
-#####JSON EXAMPLE
+##### JSON EXAMPLE
 ```json
 "49123.vpk" : [
 	["ui_list"] = list,
@@ -573,7 +573,7 @@ foreach(string id in ids)
 ```
 *This is how I now want to store them. So instead of looping through all the main cat list values with the assigned list for key validation or if its contained.*
 
-#####CURRENT
+##### CURRENT
 ```c#
         foreach (Addons.addon addon in Addons.current_addons)
         {
