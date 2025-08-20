@@ -1,11 +1,11 @@
 # ***ADDON MANAGEMENT***
 &nbsp;
 *There are many ways to manage addons and implement toggling. I took a slightly different approach — a file-based shuffling method. I created my own folder in the base directory/debug output, and when mods are disabled, they’re placed there instead of in the game’s `addons` folder.*
-
+&nbsp;
 ***EXAMPLE OF DISABLED MOD : C:\Users\DestinyTakes\source\repos\L4D2_Mod_Manager\L4D2_Mod_Manager\bin\Debug\net8.0-windows\Addons\3404846348.vpk***
-
+&nbsp;
 ***EXAMPLE OF ENABLED MOD : C:\Program Files (x86)\Steam\steamapps\common\Left 4 Dead 2\left4dead2\addons\3404846348.vpk***
-
+&nbsp;
 *This lets me instantly see which mods are enabled without parsing JSON data. For example, if an addon is disabled (see the disabled mod example above), toggling it simply moves the VPK file back into the `addons` folder of Left 4 Dead 2.*  
 &nbsp;
 ## ***WORKINGS OF THE ADDON MANAGER***
@@ -68,12 +68,15 @@ public static void create_directorys(string path)
     pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
 }
 ```
+&nbsp;
 *Here, I create a `Settings` folder, an `Addons` folder, and an `options.json` file (for UI color preferences, saved mod packs, and user info — key-based since this tool is private).*
-
+&nbsp;
 *After creating the directories, I pull all addons into the base directory's addon folder. That way, I can read `options.json`, check what was previously enabled, and move the matching addons back into the L4D2 addons folder to re-enable them.*  
-
+&nbsp;
 *I then move the enabled addons into L4D2 addon folder. Now its time to update addon list and ui. This isn't too hard all we gotta do is scrape both addon folders and grab any addons. A lot of addon names are there ids. So I format the file name and extract the id. Once I extract all the ids of the I put them in a list and continue to network request.*
-####HOW I GRAB ALL ADDONS
+&nbsp;
+#####HOW I GRAB ALL ADDONS
+&nbsp;
 ```c#
     public static List<string> grab_addon_paths()
     {
@@ -121,6 +124,7 @@ public static void create_directorys(string path)
 
 &nbsp;
 ### ***HOW DO WE GRAB MOD DATA?***
+&nbsp;
 ----
 *I use steams file detail api :"https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"*
 &nbsp;
