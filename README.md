@@ -88,6 +88,8 @@ public static void create_directorys(string path)
 *After creating the directories, I pull all addons into the base directory’s addon folder. That way, I can read `options.json`, check what was previously enabled, and move the matching addons back into the L4D2 addons folder to re-enable them.*  
 
 ---
+---
+---
 
 ```json
 ["enabled_mods"] = {
@@ -121,11 +123,15 @@ deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 ```
 
 ---
+---
+---
 
 # ***MOD PACK MANAGER***
 
 *(section TBD — you can expand this as needed)*  
 
+---
+---
 ---
 
 # ***CHEAT***
@@ -135,11 +141,19 @@ deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 *Of course, this doesn’t fully protect against memory scans, PE header scans, or abnormal protection checks. That’s why we erase the PEH and use manual mapping.*  
 
 ---
+---
+---
 
 ### ***Manual Mapping***
 
+---
+---
+---
+
 *Manual mapping loads a DLL without calling `LoadLibrary`, which keeps it hidden from listed modules. The process: allocate memory, copy DLL sections into their formatted locations, then use shellcode to execute. Afterward, we erase the PEH.*  
 
+---
+---
 ---
 
 ### ***Scattering***
@@ -148,6 +162,8 @@ deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 
 *Once you've found suitable regions for your functions, you copy them there. However, this becomes tricky because of how x86/x64 assembly handles relative addressing — especially with `jmp`, `call`, and conditional branches.*  
 
+---
+---
 ---
 
 ### ***Why do we have to patch instructions?***
@@ -164,12 +180,14 @@ epic:
 *This function originally lives at a certain address (say `0x1000`). If we move it to a code cave at `0x2000`, the instructions themselves are fine, but the `ret` will jump back incorrectly unless patched. Patching becomes tricky depending on the architecture. On x86 you can often insert the address directly; on x64 you usually need to load it into a register like `rax` and `jmp` there. Short jumps (`E8`) can only reach `±128` bytes, while near jumps can reach within `±2GB`. For longer distances, you need a register-based jump.*  
 
 ---
+---
+---
 
 ### ***Future Problem Theory***
 
 **I haven’t run into this yet, but in x64 replacing and restoring registers dynamically can be very messy. *Example solution:***
 
-**Orginal Function Without Stack Restore :**
+***Orginal Function Without Stack Restore :***
 
 ```assembly
 primary:
@@ -181,7 +199,7 @@ secondary :
  add rax,1000; ---adds to the rax address which is the secondary function start location. 
  ret
 ```
-**Orginal Function With Stack Restore:**
+***Orginal Function With Stack Restore:***
 
 ```assembly
 primary_patched:
