@@ -1,4 +1,93 @@
 
+# L4D2-Tool
+
+This is a tool made for the valve game LEFT 4 DEAD 2. It has pretty amazing features including Mod pack sharing, Addon management, vpk packer/unpacker, addon installer, addon subscription manager, responsive debug feedback, and chose able workshop paths. Hope you enjoy &lt;3
+
+I'm going to be explaining how the features work and the apporaches I made which I found pretty inovative and unique. I used some pretty amazing packages like MoonSharp which made syntax handling and debuging for my script editor amazing. Thanks to xanathar for this amazing package you can find him here : https://github.com/xanathar.
+
+First I want to talk about how my mod manager works.
+
+#### NOTE : This is a private tool, but getting a key is free and all you need to do is contact DestinyTakes on discord at takenplace and see if your fit to be a tester. This will soon be released to the public after some pretty extensive testing of a lot of the features(MAINLY THE CHEAT FEATURES). This will take time do to the effort Im putting in to it to be completly undetectable.
+
+## Menu
+
+![Menu Example](https://github.com/DestinyKubbyP/L4D2-Tool/blob/main/Menu.PNG?raw=true)
+
+
+## Addon Managment
+
+There is plenty of ways to manage addons and implement togglbility. I tried to take a little different of a apporach. I used a file based suffling method. I create my own folder in my base directory/debug output and when mods are disabled they will be placed in the addons folder in my base directory.
+
+Example of disabled mod : 
+
+C:\Users\DestinyTakes\source\repos\L4D2_Mod_Manager\L4D2_Mod_Manager\bin\Debug\net8.0-windows\Addons\3404846348.vpk
+
+Example of enabled mod : 
+
+C:\Program Files (x86)\Steam\steamapps\common\Left 4 Dead 2\left4dead2\addons\3404846348.vpk
+
+This allows me to easily see what mods are enabled without much struggle with of taking the time of parsing json data. So say we have a addon that is disabled(refer to disabled mod example) all that happens when we toggle this mod is the simple action of moving the vpk file location to the addon folder of Left 4 Game 2.
+
+You may ask what the code may look like to peform this method. Its quite simple actually, but first we need to be sure of the selected item. This means we have to go way back to how we grab and update plugins.
+
+### Explanation Of How Addon Managment Works
+
+First I define my addon class so we can a nice structured table of information for each addon. 
+
+    public class steamtag
+    {
+        public string tag { get; set; }
+    }
+
+    public class addon
+    {
+        public string name;
+        public string type;
+        public List<steamtag> tags;
+        public string main_cat;
+        public string sub_cat;
+
+        public addon(string name, string type, List<steamtag> tags, string main_cat,string sub_cat)
+        {
+            this.name = name;
+            this.main_cat = main_cat;
+            this.type = type;
+            this.tags = tags;
+            this.sub_cat = sub_cat;
+        }
+    }
+This is basics of the code. It just simple gives a class some properties of the addon. This is just so we can easily store all data in a List(List<addon>). You will see the steamtag class and that may raise some flags(do to the lack of context and information so far). Now I simply grab all the paths of the addons. Since we are using that file suffling methods we have to scrape the contents of two different folders. The folder in our base directory and the addon folder in the game files of L4D2. This is pretty simple, but we need to setup directorys first. Its really easy all I do is use the base directory and create a couple folders underneath it as seen.
+    
+    public static void create_directorys(string path)
+    {
+        string setting_path = path + "\\Settings";
+        string addon_path = path + "\\Addons";
+        string addon_fig = setting_path + "\\options.json";
+
+        if (!File.Exists(setting_path))
+        {
+            Directory.CreateDirectory(setting_path);
+        }
+
+        if (!File.Exists(addon_path))
+        {
+            Directory.CreateDirectory(addon_path); 
+        }
+
+        if (!File.Exists(addon_fig))
+        {
+            option_file = File.Create(addon_fig);
+        } else
+        {
+            option_file = File.Open(addon_fig,FileMode.Open);
+        }
+
+        pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
+    }
+As seen in the code I make a couple files. A settings and addons folder and a options.json for storing ui element color prefrences, saved mod packs, user info(this is key based its "private")
+
+
+
 # CHEAT
 
 Yea, this is the pretty crazy part of my L4D2 tool. It has polymorphic build meaning. Each user has the option to build the cheat with there own signature. Polymorphic builds are pretty annoying to pull off, but let me explain. What we do to pull this off is shifting functions in memory, adding junk code(dont like doing this and choose to remove it, but is somthing to consider), encrpyt strings, and rename symbols on build time. Some may say this is overkill for a valve cheat thats not shared much, but its not only cool as fuck, its cool as fuck.
