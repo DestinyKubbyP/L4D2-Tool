@@ -68,15 +68,15 @@ public static void create_directorys(string path)
     pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
 }
 ```
-&nbsp;
+
 *Here, I create a `Settings` folder, an `Addons` folder, and an `options.json` file (for UI color preferences, saved mod packs, and user info — key-based since this tool is private).*
-&nbsp;
+
 *After creating the directories, I pull all addons into the base directory's addon folder. That way, I can read `options.json`, check what was previously enabled, and move the matching addons back into the L4D2 addons folder to re-enable them.*  
-&nbsp;
+
 *I then move the enabled addons into L4D2 addon folder. Now its time to update addon list and ui. This isn't too hard all we gotta do is scrape both addon folders and grab any addons. A lot of addon names are there ids. So I format the file name and extract the id. Once I extract all the ids of the I put them in a list and continue to network request.*
-&nbsp;
+
 ##HOW I GRAB ALL ADDONS
-&nbsp;
+
 ```c#
     public static List<string> grab_addon_paths()
     {
@@ -101,9 +101,9 @@ public static void create_directorys(string path)
         return addons;
     }
 ```
-&nbsp;
+
 ##HOW I EXTRACT THE FILE NAMES
-&nbsp;
+
 ```c#
     public static void pull_mods_to_path(string path,string new_folder_path) //puts all mods to a single folder for managment.
     {
