@@ -586,7 +586,7 @@ foreach(string id in ids)
             }
         }
 ```
-#####THEORY
+##### THEORY
 ```c#
         foreach (Addons.addon addon in Addons.current_addons)
         {
@@ -635,7 +635,7 @@ foreach(string id in ids)
         return lists;
     }
 ```
-#####HOW I CLEAR LISTS
+##### HOW I CLEAR LISTS
 ```c#
     public static void clear_ui()
     {
