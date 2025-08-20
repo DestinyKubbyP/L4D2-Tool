@@ -4,7 +4,7 @@
 
 *Of course, this doesn’t fully protect against memory scans, PE header scans, or abnormal protection checks. That’s why we erase the PEH and use manual mapping.*  
 
-***MORE INFO :*** [***MAIN INFO***](https://raw.githubusercontent.com/DestinyKubbyP/L4D2-Tool/blob/main/README.md), [***ADDON INFO***](https://github.com/DestinyKubbyP/L4D2-Tool/blob/main/main.md)
+***MORE INFO :*** [***MAIN INFO***](https://raw.githubusercontent.com/DestinyKubbyP/L4D2-Tool/blob/README/README.md), [***ADDON INFO***](https://github.com/DestinyKubbyP/L4D2-Tool/blob/main/main.md)
 
 
 ### ***Manual Mapping***
