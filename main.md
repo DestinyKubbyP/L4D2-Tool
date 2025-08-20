@@ -520,7 +520,7 @@ foreach(string id in ids)
     }
 ```
 &nbsp;
-*When grabbing the main cat we check if the addons tags are found in any of the list of strings that are under the main cats. If the addon has the tags of the main cats, sub cats. Then we know that the main categorey matches the one with the same tags underneath. This can be iffy depending on how the user handles there tags. I tried to handle it in a way where certain cats take prority over others. So it organizes it in a more sufistcated way. Once it finds main/sub cat of the addon we simply instance a new addon object and add it to our current addon list. We then call our update_ui function which is pretty simple.* 
+*When grabbing the main cat we check if the addons tags are found in any of the list of strings that are under the main cats. If the addon has the tags of the main cats, sub cats. Then we know that the main categorey matches the one with the same tags underneath. This can be iffy depending on how the user handles there tags. I tried to handle it in a way where certain cats take prority over others. So it organizes it in a more sufistcated way. Once it finds main/sub cat of the addon we simply instance a new addon object and add it to our current addon list. We then call our update_ui function which is pretty simple.*
 
 ```c#
     public static void update_ui() 
@@ -658,6 +658,10 @@ foreach(string id in ids)
         }
     }
 ```
+
+
+#UNFINSHED STUFF HERE ->
+
 #####THE MOD STRUCTURE :
 &nbsp;
 ```c#
