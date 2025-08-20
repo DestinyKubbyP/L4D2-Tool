@@ -78,8 +78,8 @@ public static void create_directorys(string path)
   
 
 ```json
-["enabled_mods"] = {
-    ["asoidja.vpk"] = {
+"enabled_mods" : {
+    "asoidja.vpk" : {
         "type" : "script",
         "main_cat" : "Game Content",
         "name" : "Cool person"
