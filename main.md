@@ -2,16 +2,14 @@
 &nbsp;
 *There are many ways to manage addons and implement toggling. I took a slightly different approach — a file-based shuffling method. I created my own folder in the base directory/debug output, and when mods are disabled, they’re placed there instead of in the game’s `addons` folder.*
 &nbsp;
-***EXAMPLE OF DISABLED MOD : C:\Users\DestinyTakes\source\repos\L4D2_Mod_Manager\L4D2_Mod_Manager\bin\Debug\net8.0-windows\Addons\3404846348.vpk***
-&nbsp;
-***EXAMPLE OF ENABLED MOD : C:\Program Files (x86)\Steam\steamapps\common\Left 4 Dead 2\left4dead2\addons\3404846348.vpk***
+```EXAMPLE OF DISABLED MOD : C:\Users\DestinyTakes\source\repos\L4D2_Mod_Manager\L4D2_Mod_Manager\bin\Debug\net8.0-windows\Addons\3404846348.vpk```
+
+```EXAMPLE OF ENABLED MOD : C:\Program Files (x86)\Steam\steamapps\common\Left 4 Dead 2\left4dead2\addons\3404846348.vpk```
 &nbsp;
 *This lets me instantly see which mods are enabled without parsing JSON data. For example, if an addon is disabled (see the disabled mod example above), toggling it simply moves the VPK file back into the `addons` folder of Left 4 Dead 2.*  
 &nbsp;
 ## ***WORKINGS OF THE ADDON MANAGER***
-&nbsp;
 *First, I define an addon class so we can have a structured table of information for each addon:*
-&nbsp;
 ```c#
 public class steamtag
 {
@@ -76,7 +74,6 @@ public static void create_directorys(string path)
 *I then move the enabled addons into L4D2 addon folder. Now its time to update addon list and ui. This isn't too hard all we gotta do is scrape both addon folders and grab any addons. A lot of addon names are there ids. So I format the file name and extract the id. Once I extract all the ids of the I put them in a list and continue to network request.*
 &nbsp;
 ## HOW I GRAB ALL ADDONS
-&nbsp;
 ```c#
     public static List<string> grab_addon_paths()
     {
@@ -103,7 +100,6 @@ public static void create_directorys(string path)
 ```
 &nbsp;
 ## HOW I EXTRACT THE FILE NAMES
-&nbsp;
 ```c#
     public static void pull_mods_to_path(string path,string new_folder_path) //puts all mods to a single folder for managment.
     {
@@ -129,7 +125,6 @@ public static void create_directorys(string path)
 *I use steams file detail api :"https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"*
 &nbsp;
 *With the list of addon ids we collect we will now query them with the file detail api. I will provide you the example in how queried it.*
-&nbsp;
 ```c#
 List<KeyValuePair<string, string>> post_data = new List<KeyValuePair<string, string>>();
 post_data.Add(new KeyValuePair<string, string>("itemcount", ids.Count.ToString()));
@@ -211,7 +206,6 @@ foreach(string id in ids)
 ```
 &nbsp;
 *As you can see in this example there are two addons and they have there own props. We can use the structure below to deseralize this json data into a usable c# table.*
-&nbsp;
 ##### THE ADDON STRUCTURE :
 &nbsp;
 ```c#    
@@ -252,7 +246,6 @@ foreach(string id in ids)
 ```
 &nbsp;
 *Now that we have the addon list with the needed data we can now update our ui. If you've taken a peek at the ui already you can tell it has a main-catagoreys and sub-catagoreys, but how do we determine these? All that is provided to us tag wise, is the steam tag array. First we have to review the main catagoreys. I pass the addon into two functions called `grab_main_cat` and `grab_sub_cat`. I will now show you what the functions and list look like.*
-&nbsp;
 ```c#
     public static Dictionary<string, ListBox> survivorLists;
     public static Dictionary<string, ListBox> weaponLists;
@@ -409,7 +402,6 @@ foreach(string id in ids)
 ```
 &nbsp;
 *This is a simple function that assignes a designated key to a certain ui list element. So we can easily acsess list elements without to much work. You can also see the array of strings that simply just contain the sub_cats(I will explain later why what I did was bad)*
-&nbsp;
 ##### HOW I GRAB MAIN TAG
 &nbsp;
 ```c#
@@ -479,9 +471,7 @@ foreach(string id in ids)
         return final_cat;
     }
 ```
-&nbsp;
 ##### HOW I GRAB SUB TAG
-&nbsp;
 ```c#
     public static string grab_sub_cat(string cat,List<steamtag> tags)
     {
@@ -607,7 +597,7 @@ foreach(string id in ids)
 ```
 
 
-# PATHING AND LIST UTILS
+## PATHING AND LIST UTILS
 
 &nbsp;
 #####COLLECT ALL LIST
@@ -666,7 +656,6 @@ foreach(string id in ids)
 #UNFINSHED STUFF HERE ->
 
 #####THE MOD STRUCTURE :
-&nbsp;
 ```c#
 public class deseralize_js
 {
@@ -686,9 +675,7 @@ public class deseralize_js
 
 deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 ```
-&nbsp;
 #####FILE WATCHING :
-&nbsp;
 ```c#
     public static void start_file_watch(string path)
     {
