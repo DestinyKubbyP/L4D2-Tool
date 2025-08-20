@@ -161,37 +161,39 @@ epic:
  ret             ; c3
 ```
 
-*This function originally lives at a certain address (say `0x1000`). If we move it to a code cave at `0x2000`, the instructions themselves are fine, but the `ret` will jump back incorrectly unless patched. Patching becomes tricky depending on the architecture. On x86 you can often insert the address directly; on x64 you usually need to load it into a register like `rax` and `jmp` there. Short jumps (`E8`) can only reach ±128 bytes, while near jumps can reach within ±2GB. For longer distances, you need a register-based jump.*  
+*This function originally lives at a certain address (say `0x1000`). If we move it to a code cave at `0x2000`, the instructions themselves are fine, but the `ret` will jump back incorrectly unless patched. Patching becomes tricky depending on the architecture. On x86 you can often insert the address directly; on x64 you usually need to load it into a register like `rax` and `jmp` there. Short jumps (`E8`) can only reach `±128` bytes, while near jumps can reach within `±2GB`. For longer distances, you need a register-based jump.*  
 
 ---
 
 ### ***Future Problem Theory***
 
-*I haven’t run into this yet, but in x64 replacing and restoring registers dynamically can be very messy. Example solution:*  
+**I haven’t run into this yet, but in x64 replacing and restoring registers dynamically can be very messy. *Example solution:***
+
+**Orginal Function Without Stack Restore :**
 
 ```assembly
 primary:
  mov rax,rdi 
  mov rax,[rax]
- call seconday 
+ mov rax,secondary
+ call rax 
 secondary :
- add rax,1000;
+ add rax,1000; ---adds to the rax address which is the secondary function start location. 
  ret
 ```
-
-*Patched:*  
+**Orginal Function With Stack Restore:**
 
 ```assembly
 primary_patched:
  mov rax,rdi 
  mov rax,[rax]
- push rax
+ push rax ---this is where we fix it
  mov rax,secondary
  call rax 
 secondary :
- pop rax
+ pop rax ---when we pop it it restores the rax value back to mov rax,[rax] before the push.
  add rax,1000
  ret
 ```
 
-*By pushing `rax` before overwriting it, then popping it back later, we can safely restore the value and continue execution correctly. In short: `push` = save, `pop` = restore. Edit: this worked!*  
+*By pushing `rax` before overwriting it, then popping it back later, we can safely restore the value and continue execution correctly. In short: `push` = save, `pop` = restore. Edit: this worked! I ended up doing this idea and it worked amazingly. What I did to get the scattering problem fixed. Start of the address and find the instuction that needs patching. Once I find the address, I identify what type of op code its using. For example if I am on `x86` based arch and I get a short jump and the difference of the address of exceeds `128 bytes` then I am not able to properly patch the function so it directs code flow properly with the relocated functions of our DLL. What I do for calls is simple get the start of the call op code and add a offset of +1 and we most overwrite the realtive address/near jmp. For jmps and what not I just tend push one of the registers like edi. Once I push edi on the stack I change edi's value to the relocated function start address. Once I've done that I had to add a instruction that pops edi at the very start of the relocated function. So it restores the original edi value.*
