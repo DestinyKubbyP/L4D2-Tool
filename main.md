@@ -512,7 +512,6 @@ foreach(string id in ids)
         return "";
     }
 ```
-&nbsp;
 *When grabbing the main cat we check if the addons tags are found in any of the list of strings that are under the main cats. If the addon has the tags of the main cats, sub cats. Then we know that the main categorey matches the one with the same tags underneath. This can be iffy depending on how the user handles there tags. I tried to handle it in a way where certain cats take prority over others. So it organizes it in a more sufistcated way. Once it finds main/sub cat of the addon we simply instance a new addon object and add it to our current addon list. We then call our update_ui function which is pretty simple.*
 
 ```c#
@@ -550,7 +549,7 @@ foreach(string id in ids)
 *Now the easy part we simply loop through the addons and if there main cat is (Survior obviously I do manual checks so you get the gist of what Im saying) then its sub cat to grab the ui element and add the addon and boom.
 
 *Update Idea : Instead of storing all the sub cats in a array of strings and manualy checking each array. We make a class named categorey and it has the fields of the ~~main cat,~~(not needed), sub cat, addon name and list element or we can pass the addon object.*
-&nbsp;
+
 *I can then use a array of categorey classes for each addon.  We will then loop through that array grab and the sub_cat. The sub_cat is important due to how I handle my grouping. My ListBoxes are first the sub cat and are followed up by `List`. For example lets say Main is our form. The list element would be grabbed like this  : `Main.Controls[sub_cat + "List"]` now that we have our ui element we simply add it to ui list element.*
 
 ##### JSON EXAMPLE
@@ -562,7 +561,6 @@ foreach(string id in ids)
 ]
 ```
 *This is how I now want to store them. So instead of looping through all the main cat list values with the assigned list for key validation or if its contained.*
-
 ##### CURRENT
 ```c#
         foreach (Addons.addon addon in Addons.current_addons)
@@ -598,9 +596,7 @@ foreach(string id in ids)
 
 
 ## PATHING AND LIST UTILS
-
-&nbsp;
-#####COLLECT ALL LIST
+##### COLLECT ALL LIST
 ```c#
     public static List<ListBox> collect_all_list()
     {
@@ -653,9 +649,9 @@ foreach(string id in ids)
 ```
 
 
-#UNFINSHED STUFF HERE ->
+# UNFINSHED STUFF HERE ->
 
-#####THE MOD STRUCTURE :
+##### THE MOD STRUCTURE :
 ```c#
 public class deseralize_js
 {
@@ -675,7 +671,7 @@ public class deseralize_js
 
 deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 ```
-#####FILE WATCHING :
+##### FILE WATCHING :
 ```c#
     public static void start_file_watch(string path)
     {
