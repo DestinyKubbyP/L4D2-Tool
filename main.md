@@ -559,8 +559,53 @@ foreach(string id in ids)
 *Update Idea : Instead of storing all the sub cats in a array of strings and manualy checking each array. We make a class named categorey and it has the fields of the ~~main cat,~~(not needed), sub cat, addon name and list element or we can pass the addon object.*
 &nbsp;
 *I can then use a array of categorey classes for each addon.  We will then loop through that array grab and the sub_cat. The sub_cat is important due to how I handle my grouping. My ListBoxes are first the sub cat and are followed up by `List`. For example lets say Main is our form. The list element would be grabbed like this  : `Main.Controls[sub_cat + "List"]` now that we have our ui element we simply add it to ui list element.*
-&nbsp;
-*Now that we have list boxes designated to sub cats we can now update our UI.*
+
+#####JSON EXAMPLE
+```json
+"49123.vpk" : [
+	["ui_list"] = list,
+	["addon_id"] = id;
+	["addon_name"] = name;
+]
+```
+*This is how I now want to store them. So instead of looping through all the main cat list values with the assigned list for key validation or if its contained.*
+
+#####CURRENT
+```c#
+        foreach (Addons.addon addon in Addons.current_addons)
+        {
+            if (addon.main_cat == "Survivor" && survivorLists.ContainsKey(addon.sub_cat))
+            {
+                survivorLists[addon.sub_cat].Items.Add(addon.name);
+            } else if(addon.main_cat == "Weapons" && weaponLists.ContainsKey(addon.sub_cat))
+            {
+                weaponLists[addon.sub_cat].Items.Add(addon.name);
+            } else if(addon.main_cat == "Items" && itemLists.ContainsKey(addon.sub_cat))
+            {
+                itemLists[addon.sub_cat].Items.Add(addon.name);
+            } else if(addon.main_cat == "Infected" && infectedLists.ContainsKey(addon.sub_cat)) 
+            {
+                infectedLists[addon.sub_cat].Items.Add(addon.name);
+            } else if(addon.main_cat == "Game Mode" && gameModeLists.ContainsKey(addon.sub_cat))
+            {
+                gameModeLists[addon.sub_cat].Items.Add(addon.name);
+            } else if (addon.main_cat == "Game Content" && gameContentLists.ContainsKey(addon.sub_cat))
+            {
+                gameContentLists[addon.sub_cat].Items.Add(addon.name);
+            }
+        }
+```
+#####THEORY
+```c#
+        foreach (Addons.addon addon in Addons.current_addons)
+        {
+			addon.ui_list.Items.Add(addon.addon_name);
+        }
+```
+
+
+# PATHING AND LIST UTILS
+
 &nbsp;
 #####COLLECT ALL LIST
 ```c#
@@ -647,17 +692,3 @@ deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
         fileSystem.Deleted += file_destroyed;
     }
 ```
-&nbsp;
-#####EXAMPLE OF MODPACK DATA : 
-&nbsp;
-```json
-"enabled_mods" : {
-    "asoidja.vpk" : {
-        "type" : "script",
-        "main_cat" : "Game Content",
-        "name" : "Cool person"
-    }
-}
-```
-&nbsp;
-Once we have deseralized the json its time to update ui.
