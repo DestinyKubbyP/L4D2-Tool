@@ -11,7 +11,7 @@
 
 ![Menu Example](https://github.com/DestinyKubbyP/L4D2-Tool/blob/main/Menu.PNG?raw=true)
 
-
+---
 # ***ADDON MANAGEMENT***
 
 *There is plenty of ways to manage addons and implement togglbility. I tried to take a little different of a apporach. I used a file based suffling method. I create my own folder in my base directory/debug output and when mods are disabled they will be placed in the addons folder in my base directory.*
@@ -119,9 +119,9 @@
 ```
 
 *Once we use*
-
+---
 # ***MOD PACK MANAGER***
-
+---
 # ***CHEAT***
 
 *Yea, this is the pretty crazy part of my L4D2 tool. It has polymorphic build meaning. Each user has the option to build the cheat with there own signature. Polymorphic builds are pretty annoying to pull off, but let me explain. What we do to pull this off is shifting functions in memory, adding junk code(dont like doing this and choose to remove it, but is somthing to consider), encrpyt strings, and rename symbols on build time. Some may say this is overkill for a valve cheat thats not shared much, but its not only cool as fuck, its cool as fuck.*
@@ -135,17 +135,24 @@
 ### ***What does PEH(Portable Executable Header File) define?***
 
 
-```
-    1.File Type
-    2.Entry Point
-    3.Debug Data
-    4.Callbacks
-    5.Most importantly section layouts.
-```
+>>**Defintions for PEH**
+
+* *DOS Header*
+    -Its located at the begining of the file and contains a pointer to PE header
+* *PE Signature* 
+    -The PE is always PE\0\0. This makes it easy for us to find the start of the PE header.
+* *Section Headers*
+    * *Section headers give the code its layout by seperating it in certain catagories. The most common sections you will find are :*
+    
+        * ***.text***  ------→ ***Code***
+        * ***.data***  -----→ ***Initalized Data***
+        * ***.rdata*** ----→ ***Read Only Data***
+        * ***.rsrc***  ------→  ***Resources (icons, menus, etc.)***
+        * ***.reloc*** -----→ ***Relocation Info***
 
 *Earasing PEH is pretty simple. "But why earse PEH Peter?" and this is a amazing question. PEH are standard in every compiled DLL or EXE. Since they have predictable names,patterns, and locations it can make it very easy to detect a unreconginzed module and take action against us. For example of the section layouts : .text, .data, .rdata. First we will generate a string and rename the section layout names. This breaks any PE scans that use section names for there sig scans.*
 
-## ***Scattering***
+### ***Scattering***
 
 *Scattering is one of the most fun techniques I've encountered while reversing. The idea is to take a DLL and split up its functions, placing them into code caves — unused memory regions within the target process (like a game). Instead of loading the DLL as a contiguous block, each function is manually placed somewhere else in the process’s memory space.*
 
@@ -191,4 +198,4 @@
         ret; -- jmps to instruction after "call secondary" in the primary function.
 ```
 
-*Whats different? Well the first thing I did differently was push the rax reg to the stack. This allowed me to save the value before we changed it to the secondary function location and called it. This is helpful since when we get to that location of the secondary function we can restore that register so we can do proper calculations on the value. Just think as push as save and pop as revert/restore/undo.*
+*Whats different? Well the first thing I did differently was push the rax reg to the stack. This allowed me to save the value before we changed it to the secondary function location and called it. This is helpful since when we get to that location of the secondary function we can restore that register so we can do proper calculations on the value. Just think as push as save and pop as revert/restore/undo. Edit : Worked!*
