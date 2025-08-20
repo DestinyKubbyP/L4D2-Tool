@@ -31,91 +31,91 @@
 
 *First I define my addon class so we can a nice structured table of information for each addon.*
 ```c#
-    public class steamtag
-    {
-        public string tag { get; set; }
-    }
+public class steamtag
+{
+    public string tag { get; set; }
+}
 
-    public class addon
-    {
-        public string name;
-        public string type;
-        public List<steamtag> tags;
-        public string main_cat;
-        public string sub_cat;
+public class addon
+{
+    public string name;
+    public string type;
+    public List<steamtag> tags;
+    public string main_cat;
+    public string sub_cat;
 
-        public addon(string name, string type, List<steamtag> tags, string main_cat,string sub_cat)
-        {
-            this.name = name;
-            this.main_cat = main_cat;
-            this.type = type;
-            this.tags = tags;
-            this.sub_cat = sub_cat;
-        }
+    public addon(string name, string type, List<steamtag> tags, string main_cat,string sub_cat)
+    {
+        this.name = name;
+        this.main_cat = main_cat;
+        this.type = type;
+        this.tags = tags;
+        this.sub_cat = sub_cat;
     }
+}
 ```
 *This is basics of the code. It just simple gives a class some properties of the addon. This is just so we can easily store all data in a List(List<addon>). You will see the steamtag class and that may raise some flags(do to the lack of context and information so far). Now I simply grab all the paths of the addons. Since we are using that file suffling methods we have to scrape the contents of two different folders. The folder in our base directory and the addon folder in the game files of L4D2. This is pretty simple, but we need to setup directorys first. Its really easy all I do is use the base directory and create a couple folders underneath it as seen and pull all mods to base directory addon folder(will touch on this later).*
 ```c#
-    public static void create_directorys(string path)
+public static void create_directorys(string path)
+{
+    string setting_path = path + "\\Settings";
+    string addon_path = path + "\\Addons";
+    string addon_fig = setting_path + "\\options.json";
+
+    if (!File.Exists(setting_path))
     {
-        string setting_path = path + "\\Settings";
-        string addon_path = path + "\\Addons";
-        string addon_fig = setting_path + "\\options.json";
-
-        if (!File.Exists(setting_path))
-        {
-            Directory.CreateDirectory(setting_path);
-        }
-
-        if (!File.Exists(addon_path))
-        {
-            Directory.CreateDirectory(addon_path); 
-        }
-
-        if (!File.Exists(addon_fig))
-        {
-            option_file = File.Create(addon_fig);
-        } else
-        {
-            option_file = File.Open(addon_fig,FileMode.Open);
-        }
-
-        pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
+        Directory.CreateDirectory(setting_path);
     }
+
+    if (!File.Exists(addon_path))
+    {
+        Directory.CreateDirectory(addon_path); 
+    }
+
+    if (!File.Exists(addon_fig))
+    {
+        option_file = File.Create(addon_fig);
+    } else
+    {
+        option_file = File.Open(addon_fig,FileMode.Open);
+    }
+
+    pull_mods_to_path(ResourceManager.resources.workshop_path, addon_path);
+}
 ```
 *As seen in the code I make a couple files. A settings and addons folder and a options.json for storing ui element color prefrences, saved mod packs, user info(this is key based its "private")*
 
 *Once the directorys are created it pulls all addons into base directory addon folder. This is so we can read our options.json see what was previously enabled and simply move the matching addons back into our Left 4 Dead 2 addon folder reenabling the mod. This is jumping a few steps ahead cause we havent even setup the config, but its pretty much a list like this.*
 
 ```json
-    enabled_mods : {
-        ["asoidja.vpk"] : {
-            "type" : "script",
-            "main_cat" : "Game Content",
-            "name" : "Cool person"
-        }
+enabled_mods : {
+    ["asoidja.vpk"] : {
+        "type" : "script",
+        "main_cat" : "Game Content",
+        "name" : "Cool person"
     }
+}
 ```
 
 *Once this is all setup and we then desteralize the json into a live object.*
 
 ```c#
-    public class deseralize_js
+public class deseralize_js
+{
+    public class result
     {
-        public class result
-        {
-            public Dictionary<string, Dictionary<string, mod_struct>> enabled_mods;
-        }
-
-        public class mod_struct
-        {
-            public string type;
-            public string name;
-            public string main_cat;
-        }
+        public Dictionary<string, Dictionary<string, mod_struct>> enabled_mods;
     }
 
-    deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
+    public class mod_struct
+    {
+        public string type;
+        public string name;
+        public string main_cat;
+    }
+}
+
+deseralize_js structed = JsonSeralizer.Deserialize<deseralize_js>();
 ```
 
 *Once we use*
@@ -161,10 +161,10 @@
 ### ***Why do we have to patch instructions?***
 *Let’s look at a basic example:*
 ```assembly
-    epic:
-        mov eax, edi    ; 89 f8
-        add eax, esi    ; 01 f0
-        ret             ; c3
+epic:
+    mov eax, edi    ; 89 f8
+    add eax, esi    ; 01 f0
+    ret             ; c3
 ```
 *This function holds its own place in memory when loaded. Say the instructions mov eax,edi is located at 0x1000. Say we find a code cave at 0x2000 which can store this function. We then pretty much copy and paste all the bytes of the assembly function at the location 0x2000. Ok so we shifted the function in memory, but the ret instruction which jumps back to instruction ahead of the function call so we have to patch this. Patching can become iffy depending on the architecture when it comes to relative jumping. With x86 you can simply input the address most times since its in range, but with x64 you usally have to store in a 8b reg like rax and then use the jmp instruction.Since we did scatter our functions in the games memory region we dont really have to worry about the limitations of short or near jumps. This is because a short jump(E8) can only reach 128 bytes from the current instruction and the near jump can jump to any location within +2 GB(which pretty much reaches all we need). If it comes down to it we have to store it in a register so we can peform a long jump(uncommon to occur). This sucks because we will have to account for stolen bytes and restore the rax reg. It hasnt happend to me since ive only coded the x86 version of the cheat and havent had the need to peform long jumps.*
 
@@ -174,28 +174,28 @@
 *Orginal functions :*
 
 ```assembly
-    primary:
-        mov rax,rdi 
-        mov rax,[rax]
-        call seconday --pretent this is the secondary function
-    secondary :
-        add rax,1000;
-        ret; -- jmps to instruction after "call rax" in the primary function.
+primary:
+    mov rax,rdi 
+    mov rax,[rax]
+    call seconday --pretent this is the secondary function
+secondary :
+    add rax,1000;
+    ret; -- jmps to instruction after "call rax" in the primary function.
 ```
 
 *Relocated functions :*
 
 ```assembly
-    primary_patched:
-        mov rax,rdi 
-        mov rax,[rax] ---the value needed to add too.
-        push rax ---I want to take a snap shot of rax and then pop it on top of function secondary function to restore its value
-        mov rax,secondary ---we have to asign a 8b reg to the function address.
-        call rax --pretent this is the secondary function
-    secondary :
-        pop rax; ---I pop/restore to the orginal adress value.
-        add rax,1000; ---since I restored it it will give me the rax value before push of primary function.
-        ret; -- jmps to instruction after "call secondary" in the primary function.
+primary_patched:
+    mov rax,rdi 
+    mov rax,[rax] ---the value needed to add too.
+    push rax ---I want to take a snap shot of rax and then pop it on top of function secondary function to restore its value
+    mov rax,secondary ---we have to asign a 8b reg to the function address.
+    call rax --pretent this is the secondary function
+secondary :
+    pop rax; ---I pop/restore to the orginal adress value.
+    add rax,1000; ---since I restored it it will give me the rax value before push of primary function.
+    ret; -- jmps to instruction after "call secondary" in the primary function.
 ```
 
 *Whats different? Well the first thing I did differently was push the rax reg to the stack. This allowed me to save the value before we changed it to the secondary function location and called it. This is helpful since when we get to that location of the secondary function we can restore that register so we can do proper calculations on the value. Just think as push as save and pop as revert/restore/undo. Edit : Worked!*
