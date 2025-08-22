@@ -1,4 +1,4 @@
-# ***CHEAT***
+# ***CHEAT(CODE PROVIDED SOON)***
 
 *Here’s the crazy part of my L4D2 tool. It supports **polymorphic builds**, meaning each user can build the cheat with a unique signature. Polymorphic builds are annoying to pull off, but here’s how: shifting functions in memory, adding junk code (optional), encrypting strings, and renaming symbols at build time. Some might say this is overkill for a Valve cheat that isn’t widely shared — but honestly, it’s just cool as hell.*  
 
